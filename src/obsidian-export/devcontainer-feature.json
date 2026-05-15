@@ -1,0 +1,13 @@
+{
+  "id": "obsidian-export",
+  "version": "1.0.0",
+  "name": "obsidian-export",
+  "description": "Installs obsidian-export for converting Obsidian vaults to plain markdown",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "25.3.0",
+      "description": "Version of obsidian-export to install"
+    }
+  }
+}

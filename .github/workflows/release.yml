@@ -1,0 +1,23 @@
+name: "Publish Features"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: devcontainers/action@v1
+        with:
+          publish-features: "true"
+          oci-registry: "ghcr.io"
+          features-namespace: "stelonld/devcontainer-features"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
