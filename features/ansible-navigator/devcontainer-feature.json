@@ -2,9 +2,5 @@
   "id": "ansible-navigator",
   "version": "1.0.0",
   "name": "ansible-navigator",
-  "description": "Installs ansible-navigator into the ansible-core pipx environment",
-  "installsAfter": [
-    "ghcr.io/devcontainers/features/python:1",
-    "ghcr.io/devcontainers-extra/features/ansible:2"
-  ]
+  "description": "Installs ansible-navigator as a standalone pipx package. Requires either a local Ansible install or a container runtime (Docker/Podman) for Execution Environment usage."
 }
