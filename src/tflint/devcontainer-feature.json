@@ -1,0 +1,13 @@
+{
+  "id": "tflint",
+  "version": "1.0.0",
+  "name": "tflint",
+  "description": "Installs tflint, a linter for OpenTofu/Terraform",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "0.62.1",
+      "description": "Version of tflint to install"
+    }
+  }
+}
