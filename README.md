@@ -13,6 +13,7 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 | [packer](features/packer) | Installs [HashiCorp Packer](https://www.packer.io/) |
 | [opentofu](features/opentofu) | Installs [OpenTofu](https://opentofu.org/), an open-source alternative to Terraform |
 | [ansible-lint](features/ansible-lint) | Installs [ansible-lint](https://ansible.readthedocs.io/projects/lint/) into the ansible-core pipx environment |
+| [direnv](features/direnv) | Installs [direnv](https://direnv.net/) and configures the shell hook for all users |
 | [tflint](features/tflint) | Installs [tflint](https://github.com/terraform-linters/tflint), a linter for OpenTofu/Terraform |
 
 ### Usage

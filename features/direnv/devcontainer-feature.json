@@ -1,0 +1,13 @@
+{
+  "id": "direnv",
+  "version": "1.0.0",
+  "name": "direnv",
+  "description": "Installs direnv and configures the shell hook for all users",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "2.37.1",
+      "description": "Version of direnv to install"
+    }
+  }
+}
