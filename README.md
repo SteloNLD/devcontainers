@@ -10,21 +10,21 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 |---|---|
 | [zola](features/zola) | Installs the [Zola](https://www.getzola.org/) static site generator |
 | [obsidian-export](features/obsidian-export) | Installs [obsidian-export](https://github.com/zoni/obsidian-export) for converting Obsidian vaults to plain markdown |
-| [packer](features/packer) | Installs [HashiCorp Packer](https://www.packer.io/) |
 | [opentofu](features/opentofu) | Installs [OpenTofu](https://opentofu.org/), an open-source alternative to Terraform |
+| [packer](features/packer) | Installs [HashiCorp Packer](https://www.packer.io/) |
+| [tflint](features/tflint) | Installs [tflint](https://github.com/terraform-linters/tflint), a linter for OpenTofu/Terraform |
 | [ansible-lint](features/ansible-lint) | Installs [ansible-lint](https://ansible.readthedocs.io/projects/lint/) into the ansible-core pipx environment |
 | [ansible-navigator](features/ansible-navigator) | Installs [ansible-navigator](https://ansible.readthedocs.io/projects/navigator/) as a standalone pipx package. Requires either a local Ansible install or a container runtime (Docker/Podman) for Execution Environment usage. |
 | [direnv](features/direnv) | Installs [direnv](https://direnv.net/) and configures the shell hook for all users |
-| [tflint](features/tflint) | Installs [tflint](https://github.com/terraform-linters/tflint), a linter for OpenTofu/Terraform |
 
 ### Usage
 
 ```json
 "features": {
-  "ghcr.io/stelonld/devcontainer-features/zola:1": { "version": "0.22.1" },
-  "ghcr.io/stelonld/devcontainer-features/obsidian-export:1": { "version": "25.3.0" },
+  "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
   "ghcr.io/stelonld/devcontainer-features/packer:1": {},
-  "ghcr.io/stelonld/devcontainer-features/tflint:1": {}
+  "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
+  "ghcr.io/stelonld/devcontainer-features/direnv:1": {}
 }
 ```
 
@@ -34,7 +34,7 @@ Published to `ghcr.io/stelonld/devcontainer-templates`.
 
 | Template | Description |
 |---|---|
-| [iac-spec](templates/iac-spec) | Full IaC devcontainer — OpenTofu, Packer, Ansible, tflint, ansible-lint. Source for the prebuilt `iac` image. |
+| [iac-spec](templates/iac-spec) | Full IaC devcontainer — OpenTofu, Packer, Ansible, ansible-lint, ansible-navigator, tflint, direnv, pre-commit, sops. Source for the prebuilt `iac` image. |
 | [iac](templates/iac) | IaC devcontainer using the prebuilt image. Faster startup, same tools. |
 
 ### Usage
@@ -47,4 +47,4 @@ devcontainer templates apply --template-id ghcr.io/stelonld/devcontainer-templat
 
 | Image | Description |
 |---|---|
-| `ghcr.io/stelonld/devcontainers/iac:latest` | Prebuilt image from `iac-spec`. Rebuilt on every change to `templates/iac-spec` and weekly. |
+| `ghcr.io/stelonld/devcontainers/iac:latest` | Prebuilt image from `iac-spec`. Rebuilt on every change to `templates/iac-spec` or `features/` and weekly. |

@@ -2,5 +2,5 @@
   "id": "iac-spec",
   "version": "1.0.0",
   "name": "IaC (Specification)",
-  "description": "Full IaC devcontainer — OpenTofu, Packer, Ansible, tflint, ansible-lint. Builds the ghcr.io/stelonld/devcontainers/iac image."
+  "description": "Full IaC devcontainer — OpenTofu, Packer, Ansible, ansible-lint, ansible-navigator, tflint, direnv, pre-commit, sops. Builds the ghcr.io/stelonld/devcontainers/iac image."
 }
