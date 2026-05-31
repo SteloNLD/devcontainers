@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  publish:
+  publish-features:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,11 +17,25 @@ jobs:
       - uses: devcontainers/action@v1
         with:
           publish-features: "true"
-          publish-templates: "true"
           oci-registry: "ghcr.io"
           features-namespace: "stelonld/devcontainer-features"
-          templates-namespace: "stelonld/devcontainer-templates"
           base-path-to-features: "./src"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-templates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: devcontainers/action@v1
+        with:
+          publish-templates: "true"
+          oci-registry: "ghcr.io"
+          templates-namespace: "stelonld/devcontainer-templates"
           base-path-to-templates: "./templates"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
