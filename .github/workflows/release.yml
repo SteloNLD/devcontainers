@@ -20,7 +20,7 @@ jobs:
           publish-templates: "true"
           oci-registry: "ghcr.io"
           features-namespace: "stelonld/devcontainer-features"
-          templates-namespace: "stelonld/devcontainer-features"
+          templates-namespace: "stelonld/devcontainer-templates"
           base-path-to-features: "./src"
           base-path-to-templates: "./templates"
         env:
