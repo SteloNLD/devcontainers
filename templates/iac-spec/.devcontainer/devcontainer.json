@@ -14,10 +14,4 @@
     "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
     "ghcr.io/devcontainers-extra/features/sops:1": {}
   },
-  "mounts": [
-    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind",
-    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
-    "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind",
-    "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind"
-  ]
 }
