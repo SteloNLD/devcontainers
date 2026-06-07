@@ -1,12 +1,11 @@
 {
   "name": "iac",
   "image": "ghcr.io/stelonld/devcontainers/iac:latest",
-  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind,consistency=cached",
+  "workspaceMount": "source=${localEnv:HOME}/src,target=${localEnv:HOME}/src,type=bind,consistency=cached",
   "workspaceFolder": "${localWorkspaceFolder}",
   "mounts": [
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
-    "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind",
-    "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind"
+    "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind"
   ],
   "customizations": {
     "vscode": {

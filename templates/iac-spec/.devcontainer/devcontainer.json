@@ -1,7 +1,7 @@
 {
   "name": "iac-spec",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind,consistency=cached",
+  "workspaceMount": "source=${localEnv:HOME}/src,target=${localEnv:HOME}/src,type=bind,consistency=cached",
   "workspaceFolder": "${localWorkspaceFolder}",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
