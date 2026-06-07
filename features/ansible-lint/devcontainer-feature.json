@@ -1,6 +1,6 @@
 {
   "id": "ansible-lint",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "ansible-lint",
   "description": "Installs ansible-lint into the ansible-core pipx environment",
   "installsAfter": [
