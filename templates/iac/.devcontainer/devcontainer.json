@@ -2,7 +2,6 @@
   "name": "iac",
   "image": "ghcr.io/stelonld/devcontainers/iac:latest",
   "mounts": [
-    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind",
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
     "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind",
     "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind"
