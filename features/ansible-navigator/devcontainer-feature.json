@@ -1,6 +1,6 @@
 {
   "id": "ansible-navigator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "ansible-navigator",
   "description": "Installs ansible-navigator as a standalone pipx package. Requires either a local Ansible install or a container runtime (Docker/Podman) for Execution Environment usage."
 }
