@@ -29,6 +29,8 @@ jobs:
       - uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/stelonld/devcontainers/iac
-          imageTag: latest
+          # main publishes :latest; a branch publishes :<branch> so a dispatch can
+          # be tested without overwriting the image everyone opens.
+          imageTag: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
           configFile: templates/iac-spec/.devcontainer/devcontainer.json
           push: always
