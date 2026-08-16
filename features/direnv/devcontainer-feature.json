@@ -1,8 +1,8 @@
 {
   "id": "direnv",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "direnv",
-  "description": "Installs direnv and configures the shell hook for all users",
+  "description": "Installs direnv and configures the shell hook for all users, on both Debian/Ubuntu (/etc/bash.bashrc) and RPM distros (/etc/profile.d)",
   "options": {
     "version": {
       "type": "string",

@@ -12,6 +12,23 @@ curl -fsSL "https://github.com/direnv/direnv/releases/download/v${VERSION}/diren
   -o /usr/local/bin/direnv
 chmod +x /usr/local/bin/direnv
 
-echo 'eval "$(direnv hook bash)"' >> /etc/bash.bashrc
+# Where the hook goes depends on the distro, and getting it wrong fails silently —
+# the shell simply never hooks direnv.
+#   Debian/Ubuntu: interactive non-login bash reads /etc/bash.bashrc, and that file
+#                  does NOT source /etc/profile.d.
+#   Fedora/RHEL:   there is no /etc/bash.bashrc; /etc/bashrc sources
+#                  /etc/profile.d/*.sh for interactive non-login shells too.
+HOOK='eval "$(direnv hook bash)"'
+if [ -f /etc/bash.bashrc ]; then
+  echo "$HOOK" >> /etc/bash.bashrc
+  HOOK_TARGET=/etc/bash.bashrc
+elif [ -d /etc/profile.d ]; then
+  echo "$HOOK" > /etc/profile.d/direnv.sh
+  chmod +x /etc/profile.d/direnv.sh
+  HOOK_TARGET=/etc/profile.d/direnv.sh
+else
+  echo "Could not find a shell startup file to hook direnv into" >&2
+  exit 1
+fi
 
-echo "Installed $(direnv --version)"
+echo "Installed $(direnv --version), hooked via ${HOOK_TARGET}"
