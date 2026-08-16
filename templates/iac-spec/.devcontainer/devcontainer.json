@@ -29,6 +29,9 @@
     // and collections belong in the Execution Environment.
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
+    // The prompt. The binary only; a dotfiles repo supplies starship.toml, and
+    // its own init is guarded on STARSHIP_SHELL so the two never double-init.
+    "ghcr.io/stelonld/devcontainer-features/starship:1": {},
     // Both install via nanolayer (gh-release and pipx-package respectively), so
     // neither touches a package manager and both work on Fedora.
     "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
