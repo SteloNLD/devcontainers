@@ -1,34 +1,47 @@
 {
   "name": "iac-spec",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  "workspaceMount": "source=${localEnv:HOME}/src,target=${localEnv:HOME}/src,type=bind",
-  "workspaceFolder": "${localWorkspaceFolder}",
+  // Fedora + podman, built from Containerfile. Only what devcontainer features
+  // cannot do on an RPM distro lives in that file; everything else stays a feature.
+  "build": {
+    "dockerfile": "Containerfile"
+  },
+  // The whole src tree is mounted so sibling repos are reachable, but it now lands
+  // at the container's own home instead of mirroring the host path. The old
+  // source=$HOME/src,target=$HOME/src parity existed only because docker-OUTSIDE-of-
+  // docker resolved bind paths on the host, so container and host paths had to
+  // match. Nothing resolves paths outside this container any more.
+  "workspaceMount": "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind",
+  "workspaceFolder": "/home/vscode/src",
+  // podman-in-container needs --privileged, exactly as docker-in-docker did; it was
+  // declared by that feature before, so it is declared here now.
+  // --cgroupns=host silences a conmon cgroup warning on every EE start (cgroup v2
+  // controllers are not delegated into the nested namespace). Measured: occurrences
+  // go from one to zero.
+  "runArgs": ["--privileged", "--cgroupns=host"],
+  "remoteUser": "vscode",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:4": {},
-    "ghcr.io/devcontainers/features/python:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},
     "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
-    // No separate ansible / ansible-lint feature: ansible-navigator installs with
-    // --include-deps and exposes ansible, ansible-playbook and ansible-lint from
-    // its own venv. The `ansible` package pulled in 479 MB, 411 MB of which was
-    // ansible_collections — those belong in the Execution Environment, which is
-    // where playbooks and lint actually run.
+    // ansible-navigator installs with --include-deps, which also exposes ansible,
+    // ansible-playbook, ansible-galaxy and ansible-lint from the same venv. No
+    // separate ansible feature: that one pulled 479 MB, 411 MB of it collections,
+    // and collections belong in the Execution Environment.
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
+    // Both install via nanolayer (gh-release and pipx-package respectively), so
+    // neither touches a package manager and both work on Fedora.
     "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
     "ghcr.io/devcontainers-extra/features/sops:1": {}
   },
   "customizations": {
     "vscode": {
-      // Lint inside the EE. The devcontainer no longer carries ansible_collections,
-      // so a local ansible-lint cannot resolve collection-qualified modules
-      // (community.routeros.* and friends) — the EE can.
+      // Lint inside the EE: the image ships ansible-lint but no ansible_collections,
+      // so collection-qualified modules only resolve there.
       "settings": {
         "ansible.executionEnvironment.enabled": true,
         "ansible.executionEnvironment.image": "ghcr.io/stelonld/ansible-ee/base:latest",
-        "ansible.executionEnvironment.containerEngine": "docker",
+        "ansible.executionEnvironment.containerEngine": "podman",
         "ansible.executionEnvironment.pull.policy": "missing",
         "ansible.validation.lint.enabled": true
       },
@@ -39,8 +52,7 @@
         "hashicorp.packer",
         "ms-python.python",
         "mkhl.direnv",
-        "signageos.signageos-vscode-sops",
-        "ms-azuretools.vscode-docker"
+        "signageos.signageos-vscode-sops"
       ]
     }
   }

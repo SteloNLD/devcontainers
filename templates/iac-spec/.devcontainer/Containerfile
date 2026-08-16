@@ -1,0 +1,55 @@
+# Base layer for the IaC image: Fedora + podman.
+#
+# Only the things devcontainer features cannot supply on an RPM distro live here.
+# The upstream features this image used to rely on -- common-utils, python,
+# github-cli, docker-in-docker -- are Debian/Ubuntu-only, so dnf does that work.
+# Everything else stays a feature, listed in devcontainer.json.
+#
+# Why podman rather than docker-ce: the EE is already UBI9, so this puts the
+# devcontainer in the same RPM space, and podman is ~120 MB smaller with no daemon
+# to start before the first EE run.
+FROM quay.io/fedora/fedora:44
+
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# podman           — container engine for Execution Environments (replaces docker-ce)
+# python3/pipx     — replaces the `python` feature; pipx is how ansible-navigator installs
+# gh               — replaces the `github-cli` feature
+# fuse-overlayfs   — storage fallback if native overlay is unavailable when nested
+RUN dnf -y --setopt=install_weak_deps=False install \
+        podman fuse-overlayfs containers-common \
+        python3 python3-pip pipx \
+        git gh openssh-clients \
+        sudo which tar gzip unzip jq findutils procps-ng less ca-certificates curl \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Same uid as the old Ubuntu image, so bind-mounted files keep their owner.
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME \
+    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Rootless podman does not work on the host this is developed against: a process
+# cannot read its own argv[0] from /proc/self/cmdline, and rootless podman rebuilds
+# argv from exactly that to re-exec into a user namespace. Reproduced on podman
+# 4.9.3 and 5.8.4, and inside a container spawned by containerd, so it is the kernel
+# rather than a shell artifact.
+#
+# Rootful podman skips that re-exec and works. This shim keeps the container user as
+# $USERNAME while podman runs as root. EE containers still run as uid 1000, which
+# maps back to $USERNAME, so files written into the workspace keep the right owner.
+RUN printf '#!/bin/sh\nexec sudo -n /usr/bin/podman "$@"\n' > /usr/local/bin/podman \
+    && chmod +x /usr/local/bin/podman
+
+# Native overlay, which rootful podman can use in a privileged container.
+RUN mkdir -p /etc/containers \
+    && printf '[storage]\ndriver = "overlay"\nrunroot = "/run/containers/storage"\ngraphroot = "/var/lib/containers/storage"\n' \
+       > /etc/containers/storage.conf
+
+# pipx installs land where the Ubuntu image put them, so PATH and docs are unchanged.
+ENV PIPX_HOME=/usr/local/py-utils \
+    PIPX_BIN_DIR=/usr/local/py-utils/bin \
+    PATH=/usr/local/py-utils/bin:$PATH
