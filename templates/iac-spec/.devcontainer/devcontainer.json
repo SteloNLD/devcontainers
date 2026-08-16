@@ -10,8 +10,11 @@
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},
     "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
-    "ghcr.io/devcontainers-extra/features/ansible:2": {},
-    "ghcr.io/stelonld/devcontainer-features/ansible-lint:1": {},
+    // No separate ansible / ansible-lint feature: ansible-navigator installs with
+    // --include-deps and exposes ansible, ansible-playbook and ansible-lint from
+    // its own venv. The `ansible` package pulled in 479 MB, 411 MB of which was
+    // ansible_collections — those belong in the Execution Environment, which is
+    // where playbooks and lint actually run.
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
     "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
@@ -19,6 +22,16 @@
   },
   "customizations": {
     "vscode": {
+      // Lint inside the EE. The devcontainer no longer carries ansible_collections,
+      // so a local ansible-lint cannot resolve collection-qualified modules
+      // (community.routeros.* and friends) — the EE can.
+      "settings": {
+        "ansible.executionEnvironment.enabled": true,
+        "ansible.executionEnvironment.image": "ghcr.io/stelonld/ansible-ee/base:latest",
+        "ansible.executionEnvironment.containerEngine": "docker",
+        "ansible.executionEnvironment.pull.policy": "missing",
+        "ansible.validation.lint.enabled": true
+      },
       "extensions": [
         "redhat.ansible",
         "redhat.vscode-yaml",

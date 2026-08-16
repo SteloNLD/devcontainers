@@ -9,6 +9,15 @@
   ],
   "customizations": {
     "vscode": {
+      // Lint inside the EE: the image ships ansible-lint but no ansible_collections,
+      // so collection-qualified modules only resolve in the EE.
+      "settings": {
+        "ansible.executionEnvironment.enabled": true,
+        "ansible.executionEnvironment.image": "ghcr.io/stelonld/ansible-ee/base:latest",
+        "ansible.executionEnvironment.containerEngine": "docker",
+        "ansible.executionEnvironment.pull.policy": "missing",
+        "ansible.validation.lint.enabled": true
+      },
       "extensions": [
         "redhat.ansible",
         "redhat.vscode-yaml",
