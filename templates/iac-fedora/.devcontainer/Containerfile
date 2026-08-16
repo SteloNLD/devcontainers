@@ -1,0 +1,70 @@
+# IaC devcontainer, Fedora + podman.
+#
+# Replaces the Ubuntu/docker-in-docker image. Rationale in hetzner-platform
+# docs/continuation.md §1e: the EE is already UBI9, podman is ~120 MB smaller than
+# the docker-ce install it replaces, and dropping the daemon removes a moving part.
+#
+# The upstream devcontainer features this image would otherwise use
+# (common-utils, python, github-cli, docker-in-docker) are Debian/Ubuntu-only, so
+# their work is done here with dnf instead. Our own features are distro-agnostic
+# and are invoked from features/ below, unchanged — the build doubles as a
+# portability test for them.
+FROM quay.io/fedora/fedora:44
+
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# podman           — container engine for Execution Environments (replaces docker-ce)
+# python3/pipx     — replaces the `python` feature; pipx is how ansible-navigator installs
+# gh, git, direnv  — replaces the `github-cli` feature; direnv installed via our feature below
+# fuse-overlayfs   — storage fallback if native overlay is unavailable in the nested container
+RUN dnf -y --setopt=install_weak_deps=False install \
+        podman fuse-overlayfs containers-common \
+        python3 python3-pip pipx \
+        git gh openssh-clients \
+        sudo which tar gzip unzip jq findutils procps-ng less ca-certificates curl \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Non-root user, matching the Ubuntu image's uid so bind-mounted files keep their owner.
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME \
+    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Rootless podman does NOT work on this host: a process cannot read its own argv[0]
+# from /proc/self/cmdline, and rootless podman rebuilds argv from exactly that to
+# re-exec into a user namespace. Verified with podman 4.9.3 and 5.8.4, and inside a
+# container spawned by containerd, so it is the kernel and not a shell artifact —
+# see docs/continuation.md §1c.
+#
+# Rootful podman skips that re-exec entirely and works. This shim keeps the
+# container's user as $USERNAME while podman itself runs as root. EE containers still
+# run as uid 1000, which maps back to $USERNAME, so files written into the workspace
+# keep the right owner.
+RUN printf '#!/bin/sh\nexec sudo -n /usr/bin/podman "$@"\n' > /usr/local/bin/podman \
+    && chmod +x /usr/local/bin/podman
+
+# Native overlay, which rootful podman can use in a privileged container.
+RUN mkdir -p /etc/containers \
+    && printf '[storage]\ndriver = "overlay"\nrunroot = "/run/containers/storage"\ngraphroot = "/var/lib/containers/storage"\n' \
+       > /etc/containers/storage.conf
+
+# pipx installs land where the Ubuntu image put them, so PATH and docs stay the same.
+ENV PIPX_HOME=/usr/local/py-utils \
+    PIPX_BIN_DIR=/usr/local/py-utils/bin \
+    PATH=/usr/local/py-utils/bin:$PATH
+
+# Our own features, run as their install.sh would run them. VERSION values are the
+# defaults from each devcontainer-feature.json.
+COPY features /tmp/features
+RUN set -e \
+    && VERSION=1.12.1 bash /tmp/features/opentofu/install.sh \
+    && VERSION=1.15.3 bash /tmp/features/packer/install.sh \
+    && VERSION=0.62.1 bash /tmp/features/tflint/install.sh \
+    && VERSION=2.37.1 bash /tmp/features/direnv/install.sh \
+    && bash /tmp/features/ansible-navigator/install.sh \
+    && rm -rf /tmp/features
+
+USER $USERNAME
