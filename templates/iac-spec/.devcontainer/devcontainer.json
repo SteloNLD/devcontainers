@@ -19,7 +19,30 @@
   // go from one to zero.
   "runArgs": ["--privileged", "--cgroupns=host"],
   "remoteUser": "vscode",
+  // Ordering is not cosmetic here. devcontainers-extra's pre-commit and sops
+  // install through nanolayer, which bootstraps a python if it cannot find one --
+  // by calling apt-get, which does not exist on Fedora. While python3 came from
+  // the Containerfile it was in the base layer and always present; as a feature it
+  // has to be sequenced ahead of them explicitly. Features cannot declare this
+  // themselves (pre-commit has no way to know about our python), so it is pinned
+  // here. This coupling is the real cost of moving base tooling into features.
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/stelonld/devcontainer-features/python"
+  ],
   "features": {
+    // Ours, not devcontainers/features/python, and the reason is measured.
+    // Upstream was tried here with version=os-provided and installTools=false --
+    // the two settings that should have made it cheap -- and the image went from
+    // 866 MB to 1381 MB. It installs a fixed dev toolchain before it ever reads
+    // the version option, because it can build CPython from source; gcc is 120 MB
+    // and tk-devel pulls libGL -> Mesa -> llvm-libs, adding 140.5 MB of LLVM and
+    // 52.3 MB of DRI drivers to a container that renders nothing.
+    //
+    // Ours installs python3, pip and pipx from the package manager and cannot
+    // build from source. That is the whole difference.
+    "ghcr.io/stelonld/devcontainer-features/python:1": {},
+    // Ours, because upstream's github-cli is apt-only.
+    "ghcr.io/stelonld/devcontainer-features/github-cli:1": {},
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},
     "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
