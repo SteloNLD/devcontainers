@@ -15,13 +15,15 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 
 # podman           — container engine for Execution Environments (replaces docker-ce)
-# python3/pipx     — replaces the `python` feature; pipx is how ansible-navigator installs
-# gh               — replaces the `github-cli` feature
 # fuse-overlayfs   — storage fallback if native overlay is unavailable when nested
+# zsh              — 7.9 MB, and not the default shell; there for when you want it.
+#                    Not via common-utils, which would also append its own PS1 to
+#                    ~/.bashrc and fight the starship feature for the prompt.
+#
+# python3/pipx and gh used to be here. They are features now — see devcontainer.json.
 RUN dnf -y --setopt=install_weak_deps=False install \
         podman fuse-overlayfs containers-common \
-        python3 python3-pip pipx \
-        git gh openssh-clients \
+        git openssh-clients zsh \
         sudo which tar gzip unzip jq findutils procps-ng less ca-certificates curl \
     && dnf clean all \
     && rm -rf /var/cache/dnf

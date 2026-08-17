@@ -20,6 +20,18 @@
   "runArgs": ["--privileged", "--cgroupns=host"],
   "remoteUser": "vscode",
   "features": {
+    // python supplies python3 + pipx, which ansible-navigator installs through.
+    // installTools defaults to TRUE and would drag in
+    // flake8,autopep8,black,yapf,mypy,pydocstyle,pycodestyle,bandit,pipenv,
+    // virtualenv,pytest,pylint -- ~175 MB of linters nothing here uses. That
+    // default, not any Fedora incompatibility, is why this was a dnf line: the
+    // feature itself branches on ADJUSTED_ID and handles rhel fine.
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "os-provided",
+      "installTools": false
+    },
+    // Ours, because upstream's github-cli is apt-only.
+    "ghcr.io/stelonld/devcontainer-features/github-cli:1": {},
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},
     "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
