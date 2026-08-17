@@ -32,10 +32,18 @@ if [ "${INSTALLSHELLHOOK}" = "true" ]; then
   #   Fedora/RHEL:   there is no /etc/bash.bashrc; /etc/bashrc sources
   #                  /etc/profile.d/*.sh for interactive non-login shells too.
   #
-  # Guarded on STARSHIP_SHELL, which `starship init bash` exports. A dotfiles repo
-  # that also initialises starship will then skip its own eval rather than install
-  # the PROMPT_COMMAND and DEBUG trap twice.
-  HOOK='[ -z "${STARSHIP_SHELL:-}" ] && eval "$(starship init bash)"'
+  # Guarded on the starship_precmd FUNCTION, never on $STARSHIP_SHELL.
+  #
+  # starship EXPORTS STARSHIP_SHELL and STARSHIP_SESSION_KEY, so every child
+  # process inherits them. Guarding on the variable asks "did starship initialise
+  # anywhere in my ancestry?" instead of "did it initialise in this shell", so any
+  # shell spawned from an initialised one skipped its own init and came up with the
+  # distro's stock prompt. That shipped in 1.0.0 and is what this bump fixes.
+  #
+  # Functions are not exported, so declare -F is per-shell and correct. It also
+  # still stops a dotfiles repo from initialising starship a second time in the
+  # same shell after this hook has run.
+  HOOK='declare -F starship_precmd >/dev/null 2>&1 || eval "$(starship init bash)"'
   if [ -f /etc/bash.bashrc ]; then
     echo "$HOOK" >> /etc/bash.bashrc
     HOOK_TARGET=/etc/bash.bashrc

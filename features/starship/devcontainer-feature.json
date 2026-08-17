@@ -1,6 +1,6 @@
 {
   "id": "starship",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "starship",
   "description": "Installs the starship cross-shell prompt and configures the bash hook for all users, on both Debian/Ubuntu (/etc/bash.bashrc) and RPM distros (/etc/profile.d)",
   "options": {
