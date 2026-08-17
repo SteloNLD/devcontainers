@@ -14,16 +14,17 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
 
+# What is left here is what no feature can supply: the container engine and its
+# storage, plus the handful of base utilities features themselves assume exist.
+#
 # podman           — container engine for Execution Environments (replaces docker-ce)
-# python3/pipx     — pipx is how ansible-navigator installs. NOT the python feature:
-#                    measured at +515 MB, because the feature installs build deps and
-#                    Fedora pulls libLLVM and Mesa in behind them. See devcontainer.json.
 # fuse-overlayfs   — storage fallback if native overlay is unavailable when nested
 #
-# gh moved out to our own github-cli feature — upstream's is apt-only.
+# python3/pipx and gh moved out to our own features — see devcontainer.json.
+# Both are ours rather than upstream's: upstream's github-cli is apt-only, and
+# upstream's python installs a compiler toolchain that costs +515 MB on Fedora.
 RUN dnf -y --setopt=install_weak_deps=False install \
         podman fuse-overlayfs containers-common \
-        python3 python3-pip pipx \
         git openssh-clients \
         sudo which tar gzip unzip jq findutils procps-ng less ca-certificates curl \
     && dnf clean all \
