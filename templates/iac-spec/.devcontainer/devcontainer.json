@@ -20,17 +20,22 @@
   "runArgs": ["--privileged", "--cgroupns=host"],
   "remoteUser": "vscode",
   "features": {
-    // python supplies python3 + pipx, which ansible-navigator installs through.
-    // installTools defaults to TRUE and would drag in
-    // flake8,autopep8,black,yapf,mypy,pydocstyle,pycodestyle,bandit,pipenv,
-    // virtualenv,pytest,pylint -- ~175 MB of linters nothing here uses. That
-    // default, not any Fedora incompatibility, is why this was a dnf line: the
-    // feature itself branches on ADJUSTED_ID and handles rhel fine.
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "os-provided",
-      "installTools": false
-    },
-    // Ours, because upstream's github-cli is apt-only.
+    // NO python feature here, and the reason is measured rather than assumed.
+    // It was tried on this branch with version=os-provided and installTools=false
+    // -- both defaults that should have made it cheap -- and the image went from
+    // 866 MB to 1381 MB. The feature installs build dependencies regardless, and
+    // Fedora's dependency graph then drags in libLLVM (141 MB), Mesa's libgallium
+    // (53 MB), libicudata (31 MB) and /usr/include (38 MB) behind them. gcc is
+    // present in that image and absent from the dnf-based one.
+    //
+    // So python3 + pipx stay a dnf line in the Containerfile. Not because the
+    // feature fails on Fedora -- it branches on ADJUSTED_ID and works -- but
+    // because naming packages explicitly is the only way to refuse their
+    // dependency closure.
+    //
+    // Ours, because upstream's github-cli is apt-only. This half of the
+    // experiment worked: it is roughly size-neutral against the dnf line it
+    // replaced, and moves one more thing into devcontainer.json.
     "ghcr.io/stelonld/devcontainer-features/github-cli:1": {},
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},

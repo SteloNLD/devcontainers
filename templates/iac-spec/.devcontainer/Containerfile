@@ -15,15 +15,16 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 
 # podman           — container engine for Execution Environments (replaces docker-ce)
+# python3/pipx     — pipx is how ansible-navigator installs. NOT the python feature:
+#                    measured at +515 MB, because the feature installs build deps and
+#                    Fedora pulls libLLVM and Mesa in behind them. See devcontainer.json.
 # fuse-overlayfs   — storage fallback if native overlay is unavailable when nested
-# zsh              — 7.9 MB, and not the default shell; there for when you want it.
-#                    Not via common-utils, which would also append its own PS1 to
-#                    ~/.bashrc and fight the starship feature for the prompt.
 #
-# python3/pipx and gh used to be here. They are features now — see devcontainer.json.
+# gh moved out to our own github-cli feature — upstream's is apt-only.
 RUN dnf -y --setopt=install_weak_deps=False install \
         podman fuse-overlayfs containers-common \
-        git openssh-clients zsh \
+        python3 python3-pip pipx \
+        git openssh-clients \
         sudo which tar gzip unzip jq findutils procps-ng less ca-certificates curl \
     && dnf clean all \
     && rm -rf /var/cache/dnf
