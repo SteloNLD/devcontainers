@@ -1,0 +1,16 @@
+{
+  "id": "python",
+  "version": "1.0.0",
+  "name": "Python (distro packages only)",
+  "description": "Installs the distribution's python3, pip and pipx from the package manager. Deliberately NOT a replacement for devcontainers/features/python: this cannot build CPython from source, and that is the entire point -- upstream installs a compiler toolchain to keep that option open, which on Fedora costs ~515 MB including llvm-libs and Mesa.",
+  "options": {
+    "installPipx": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install pipx as well. Needed if any later feature installs a Python application through it (ansible-navigator does)."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}
