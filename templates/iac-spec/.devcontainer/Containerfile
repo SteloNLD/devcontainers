@@ -36,6 +36,18 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
+# ~/.config must exist and be owned by $USERNAME before the container starts.
+# A bind mount at ~/.config/gh makes the runtime create any missing parent, and
+# it creates them as root -- so without this, every rebuild lands a root-owned
+# ~/.config and the first thing that tries to write there fails:
+#
+#   ln: failed to create symbolic link '/home/vscode/.config/starship.toml': Permission denied
+#
+# which is exactly what a dotfiles install does first. Same for ~/.local/bin,
+# where an unprivileged starship fallback install puts its binary.
+RUN mkdir -p /home/$USERNAME/.config /home/$USERNAME/.local/bin \
+    && chown -R $USER_UID:$USER_GID /home/$USERNAME/.config /home/$USERNAME/.local
+
 # Rootless podman does not work on the host this is developed against: a process
 # cannot read its own argv[0] from /proc/self/cmdline, and rootless podman rebuilds
 # argv from exactly that to re-exec into a user namespace. Reproduced on podman
