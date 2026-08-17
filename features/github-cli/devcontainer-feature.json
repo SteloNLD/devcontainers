@@ -1,0 +1,23 @@
+{
+  "id": "github-cli",
+  "version": "1.0.0",
+  "name": "GitHub CLI",
+  "description": "Installs the GitHub CLI (gh) with dnf where available, falling back to the release tarball. The upstream devcontainers/features/github-cli is apt-only, so it cannot run on an RPM base.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "2.97.0",
+      "description": "Version to install when using the release tarball. Ignored when dnf is used -- there you get whatever the distro packages."
+    },
+    "useRelease": {
+      "type": "boolean",
+      "default": false,
+      "description": "Force the pinned release tarball even when dnf is available. Use when you need an exact version rather than the distro's."
+    },
+    "installManPages": {
+      "type": "boolean",
+      "default": false,
+      "description": "Install gh's man pages (229 of them, ~950 KB). Release-tarball path only; dnf decides for itself. 'gh --help' works either way."
+    }
+  }
+}
