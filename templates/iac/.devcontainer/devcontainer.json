@@ -1,17 +1,18 @@
 {
   "name": "iac",
   "image": "ghcr.io/stelonld/devcontainers/iac:latest",
-  // The whole src tree is mounted so sibling repos are reachable, landing at the
-  // container's own home rather than mirroring the host path. Point workspaceFolder
-  // at this repo's path underneath it, e.g.
-  //   /home/vscode/src/github.com/<owner>/<repo>
-  "workspaceMount": "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind",
-  "workspaceFolder": "/home/vscode/src",
-  // podman-in-container needs --privileged (docker-in-docker's feature used to
-  // declare it); --cgroupns=host silences a conmon cgroup warning on every EE start.
+  // Stock workspace (/workspaces/<repo>) on purpose. Mounting ~/src as the
+  // workspace instead needs host-path parity, because ${localWorkspaceFolderBasename}
+  // flattens github.com/<owner>/<repo> to <repo> and there is no way to rewrite a
+  // prefix -- not worth every container path reading /Users/...
+  //
+  // --privileged is required for podman-in-container; --cgroupns=host silences a
+  // conmon cgroup warning on every EE start.
   "runArgs": ["--privileged", "--cgroupns=host"],
   "remoteUser": "vscode",
   "mounts": [
+    // Sibling repos. The open repo appears here too; same bind, cannot drift.
+    "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind",
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
     "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind"
   ],

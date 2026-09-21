@@ -5,18 +5,12 @@
   "build": {
     "dockerfile": "Containerfile"
   },
-  // The whole src tree is mounted so sibling repos are reachable, but it now lands
-  // at the container's own home instead of mirroring the host path. The old
-  // source=$HOME/src,target=$HOME/src parity existed only because docker-OUTSIDE-of-
-  // docker resolved bind paths on the host, so container and host paths had to
-  // match. Nothing resolves paths outside this container any more.
-  "workspaceMount": "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind",
-  "workspaceFolder": "/home/vscode/src",
-  // podman-in-container needs --privileged, exactly as docker-in-docker did; it was
-  // declared by that feature before, so it is declared here now.
-  // --cgroupns=host silences a conmon cgroup warning on every EE start (cgroup v2
-  // controllers are not delegated into the nested namespace). Measured: occurrences
-  // go from one to zero.
+  // Build spec for the prebuilt image, not a daily-driver devcontainer (that is
+  // templates/iac). Nothing host-specific here on purpose -- CI builds this on a
+  // runner where ~/src does not exist.
+  //
+  // --privileged is required for podman-in-container; --cgroupns=host silences a
+  // conmon cgroup warning on every EE start.
   "runArgs": ["--privileged", "--cgroupns=host"],
   "remoteUser": "vscode",
   // Ordering is not cosmetic here. devcontainers-extra's pre-commit and sops

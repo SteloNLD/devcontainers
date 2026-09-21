@@ -48,3 +48,22 @@ devcontainer templates apply --template-id ghcr.io/stelonld/devcontainer-templat
 | Image | Description |
 |---|---|
 | `ghcr.io/stelonld/devcontainers/iac:latest` | Prebuilt image from `iac-spec`. Rebuilt on every change to `templates/iac-spec` or `features/` and weekly. |
+
+`:latest` is a multi-arch manifest (`linux/amd64` + `linux/arm64`), so Apple
+Silicon pulls a native image instead of emulating x86_64. Each arch is built on
+its own runner and merged; the per-arch tags (`:latest-linux-amd64`,
+`:latest-linux-arm64`) stay in the registry if you need to pin one.
+
+```bash
+docker manifest inspect ghcr.io/stelonld/devcontainers/iac:latest \
+  | jq -r '.manifests[].platform | .os + "/" + .architecture'
+```
+
+## Architectures
+
+Features support `linux/amd64` and `linux/arm64`, selecting downloads by
+`uname -m`. Two are slower to install on arm64:
+
+- **ansible-navigator** — `onigurumacffi` has no aarch64 wheel, so it is built
+  from source and the toolchain removed again afterwards.
+- **obsidian-export** — no prebuilt aarch64 binary, compiled from source.
