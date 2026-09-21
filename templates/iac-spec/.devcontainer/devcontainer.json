@@ -40,6 +40,9 @@
     "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
     "ghcr.io/stelonld/devcontainer-features/packer:1": {},
     "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
+    // OpenBao CLI (bao). Secrets themselves resolve in the EE, which carries
+    // community.hashi_vault; this is for driving bao by hand.
+    "ghcr.io/stelonld/devcontainer-features/openbao:1": {},
     // ansible-navigator installs with --include-deps, which also exposes ansible,
     // ansible-playbook, ansible-galaxy and ansible-lint from the same venv. No
     // separate ansible feature: that one pulled 479 MB, 411 MB of it collections,
@@ -70,6 +73,9 @@
         "redhat.vscode-yaml",
         "hashicorp.terraform",
         "hashicorp.packer",
+        // OpenBao/Vault config files are HCL, which the terraform extension does
+        // not cover.
+        "hashicorp.hcl",
         "ms-python.python",
         "mkhl.direnv",
         "signageos.signageos-vscode-sops"

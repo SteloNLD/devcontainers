@@ -31,6 +31,9 @@
         "redhat.vscode-yaml",
         "hashicorp.terraform",
         "hashicorp.packer",
+        // OpenBao/Vault config files are HCL, which the terraform extension does
+        // not cover.
+        "hashicorp.hcl",
         "ms-python.python",
         "mkhl.direnv",
         "signageos.signageos-vscode-sops"

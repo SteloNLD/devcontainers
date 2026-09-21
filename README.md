@@ -11,6 +11,7 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 | [zola](features/zola) | Installs the [Zola](https://www.getzola.org/) static site generator |
 | [obsidian-export](features/obsidian-export) | Installs [obsidian-export](https://github.com/zoni/obsidian-export) for converting Obsidian vaults to plain markdown |
 | [opentofu](features/opentofu) | Installs [OpenTofu](https://opentofu.org/), an open-source alternative to Terraform |
+| [openbao](features/openbao) | Installs the [OpenBao](https://openbao.org/) CLI (`bao`), the open-source fork of HashiCorp Vault |
 | [packer](features/packer) | Installs [HashiCorp Packer](https://www.packer.io/) |
 | [tflint](features/tflint) | Installs [tflint](https://github.com/terraform-linters/tflint), a linter for OpenTofu/Terraform |
 | [ansible-lint](features/ansible-lint) | Installs [ansible-lint](https://ansible.readthedocs.io/projects/lint/) into the ansible-core pipx environment |
@@ -22,6 +23,7 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 ```json
 "features": {
   "ghcr.io/stelonld/devcontainer-features/opentofu:1": {},
+  "ghcr.io/stelonld/devcontainer-features/openbao:1": {},
   "ghcr.io/stelonld/devcontainer-features/packer:1": {},
   "ghcr.io/stelonld/devcontainer-features/tflint:1": {},
   "ghcr.io/stelonld/devcontainer-features/direnv:1": {}
@@ -34,7 +36,7 @@ Published to `ghcr.io/stelonld/devcontainer-templates`.
 
 | Template | Description |
 |---|---|
-| [iac-spec](templates/iac-spec) | Full IaC devcontainer — OpenTofu, Packer, Ansible, ansible-lint, ansible-navigator, tflint, direnv, pre-commit, sops. Source for the prebuilt `iac` image. |
+| [iac-spec](templates/iac-spec) | Full IaC devcontainer — OpenTofu, OpenBao, Packer, Ansible, ansible-lint, ansible-navigator, tflint, direnv, pre-commit, sops. Source for the prebuilt `iac` image. |
 | [iac](templates/iac) | IaC devcontainer using the prebuilt image. Faster startup, same tools. |
 
 ### Usage
