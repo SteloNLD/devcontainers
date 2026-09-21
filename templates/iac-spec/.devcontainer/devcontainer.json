@@ -49,6 +49,11 @@
     // and collections belong in the Execution Environment.
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
+    // For ms-vscode.PowerShell, whose linting runs PSScriptAnalyzer inside a real
+    // pwsh host -- the extension alone does nothing without it. Measured cost:
+    // ~195 MB pwsh (it bundles its own .NET) plus ~135 MB libicu, which pwsh will
+    // not start without. That is the largest single feature here by some margin.
+    "ghcr.io/stelonld/devcontainer-features/powershell:1": {},
     // The prompt. The binary only; a dotfiles repo supplies starship.toml, and
     // its own init is guarded on STARSHIP_SHELL so the two never double-init.
     "ghcr.io/stelonld/devcontainer-features/starship:1": {},
@@ -77,6 +82,7 @@
         // not cover.
         "hashicorp.hcl",
         "ms-python.python",
+        "ms-vscode.PowerShell",
         "mkhl.direnv",
         "signageos.signageos-vscode-sops"
       ]

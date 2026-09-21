@@ -35,6 +35,7 @@
         // not cover.
         "hashicorp.hcl",
         "ms-python.python",
+        "ms-vscode.PowerShell",
         "mkhl.direnv",
         "signageos.signageos-vscode-sops"
       ]

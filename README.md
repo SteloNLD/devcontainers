@@ -17,6 +17,7 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 | [ansible-lint](features/ansible-lint) | Installs [ansible-lint](https://ansible.readthedocs.io/projects/lint/) into the ansible-core pipx environment |
 | [ansible-navigator](features/ansible-navigator) | Installs [ansible-navigator](https://ansible.readthedocs.io/projects/navigator/) as a standalone pipx package. Requires either a local Ansible install or a container runtime (Docker/Podman) for Execution Environment usage. |
 | [direnv](features/direnv) | Installs [direnv](https://direnv.net/) and configures the shell hook for all users |
+| [powershell](features/powershell) | Installs [PowerShell](https://github.com/PowerShell/PowerShell) (`pwsh`) and PSScriptAnalyzer, for the `ms-vscode.PowerShell` extension's linting. Adds ~330 MB (pwsh bundles .NET; libicu is required). |
 
 ### Usage
 

@@ -1,0 +1,18 @@
+{
+  "id": "powershell",
+  "version": "1.0.0",
+  "name": "PowerShell",
+  "description": "Installs PowerShell (pwsh) from the self-contained Linux tarball, which bundles its own .NET runtime. Pairs with the ms-vscode.PowerShell extension, whose linting runs PSScriptAnalyzer inside a real pwsh host.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "7.6.6",
+      "description": "Version of PowerShell to install"
+    },
+    "installPSScriptAnalyzer": {
+      "type": "boolean",
+      "default": true,
+      "description": "Also install PSScriptAnalyzer system-wide, so Invoke-ScriptAnalyzer works from the shell and in pre-commit, not only inside the editor."
+    }
+  }
+}

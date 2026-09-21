@@ -73,6 +73,7 @@ jobs:
               "packer version" \
               "tflint --version" \
               "bao version" \
+              "pwsh --version" \
               "direnv version" \
               "starship --version" \
               "ansible --version" \
