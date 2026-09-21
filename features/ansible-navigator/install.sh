@@ -48,9 +48,13 @@ if [ -n "$MGR" ] && ! have_wheel; then
 fi
 rm -rf /tmp/onig-probe
 
-# --include-deps also exposes ansible, ansible-playbook, ansible-galaxy and
-# ansible-lint from this venv, so no separate ansible install is needed.
-pipx install --include-deps ansible-navigator
+# No --include-deps. ansible-core and ansible-lint still land in this venv --
+# navigator requires ansible-lint, which requires ansible-core, so they cannot be
+# avoided -- but they stay unexposed, and only ansible-navigator reaches PATH.
+# Exposing them put an ansible-playbook on PATH that runs against an empty
+# ansible_collections, quietly competing with the EE that has the collections.
+# Use `ansible-navigator exec` / `ansible-navigator lint` to reach the EE's.
+pipx install ansible-navigator
 
 if [ "$BUILT_FROM_SOURCE" = "true" ]; then
   echo "Removing the build toolchain; $ONIG_RUNTIME stays for the built extension."
@@ -70,5 +74,3 @@ if [ "$BUILT_FROM_SOURCE" = "true" ]; then
 fi
 
 echo "Installed $(ansible-navigator --version)"
-echo "Exposed   $(ansible --version | head -1)"
-echo "Exposed   $(ansible-lint --version | head -1)"

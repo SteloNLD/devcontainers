@@ -1,8 +1,8 @@
 {
   "id": "ansible-navigator",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "name": "ansible-navigator",
-  "description": "Installs ansible-navigator as a standalone pipx package with --include-deps, which also exposes ansible, ansible-playbook, ansible-galaxy and ansible-lint from the same venv. Needs a container runtime (Docker/Podman) for Execution Environments; no separate Ansible install is required.",
+  "description": "Installs ansible-navigator as a standalone pipx package. Only ansible-navigator reaches PATH: ansible-core and ansible-lint come along as dependencies but stay unexposed, so nothing competes with the Execution Environment, which is where the collections live. Needs a container runtime (Docker/Podman).",
   "installsAfter": [
     "ghcr.io/devcontainers/features/python"
   ]

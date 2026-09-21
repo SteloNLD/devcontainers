@@ -43,10 +43,10 @@
     // OpenBao CLI (bao). Secrets themselves resolve in the EE, which carries
     // community.hashi_vault; this is for driving bao by hand.
     "ghcr.io/stelonld/devcontainer-features/openbao:1": {},
-    // ansible-navigator installs with --include-deps, which also exposes ansible,
-    // ansible-playbook, ansible-galaxy and ansible-lint from the same venv. No
-    // separate ansible feature: that one pulled 479 MB, 411 MB of it collections,
-    // and collections belong in the Execution Environment.
+    // Only ansible-navigator reaches PATH; ansible-core and ansible-lint ride
+    // along as dependencies but stay unexposed. Reach the EE's copies with
+    // `ansible-navigator exec` / `lint`. No separate ansible feature: that one
+    // pulled 479 MB, 411 MB of it collections, which belong in the EE.
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
     // For ms-vscode.PowerShell, whose linting runs PSScriptAnalyzer inside a real
@@ -64,8 +64,8 @@
   },
   "customizations": {
     "vscode": {
-      // Lint inside the EE: the image ships ansible-lint but no ansible_collections,
-      // so collection-qualified modules only resolve there.
+      // Lint inside the EE: it has the collections, so collection-qualified
+      // modules resolve there and nowhere else.
       "settings": {
         "ansible.executionEnvironment.enabled": true,
         "ansible.executionEnvironment.image": "ghcr.io/stelonld/ansible-ee/base:latest",

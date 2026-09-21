@@ -76,8 +76,6 @@ jobs:
               "pwsh --version" \
               "direnv version" \
               "starship --version" \
-              "ansible --version" \
-              "ansible-lint --version" \
               "ansible-navigator --version" \
               "pre-commit --version" \
               "sops --version"
