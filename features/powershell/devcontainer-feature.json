@@ -1,8 +1,8 @@
 {
   "id": "powershell",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "name": "PowerShell",
-  "description": "Installs PowerShell (pwsh) from the self-contained Linux tarball, which bundles its own .NET runtime. Pairs with the ms-vscode.PowerShell extension, whose linting runs PSScriptAnalyzer inside a real pwsh host.",
+  "description": "Installs PowerShell (pwsh) from the self-contained Linux tarball, which bundles its own .NET runtime, plus PSScriptAnalyzer. Pairs with the ms-vscode.PowerShell extension, whose linting runs PSScriptAnalyzer inside a real pwsh host.",
   "options": {
     "version": {
       "type": "string",
@@ -13,6 +13,16 @@
       "type": "boolean",
       "default": true,
       "description": "Also install PSScriptAnalyzer system-wide, so Invoke-ScriptAnalyzer works from the shell and in pre-commit, not only inside the editor."
+    },
+    "includeCompatibilityProfiles": {
+      "type": "boolean",
+      "default": false,
+      "description": "Keep PSScriptAnalyzer's compatibility_profiles, 279 MB of JSON describing the API surface of Windows PowerShell versions. Only the PSUseCompatible* rules read them, and those emit nothing unless you configure target profiles, so this is off by default. Turn it on if you lint for cross-version Windows compatibility."
+    },
+    "useInvariantGlobalization": {
+      "type": "boolean",
+      "default": false,
+      "description": "Run .NET with invariant globalization and drop libicu, saving 36 MB. Linting and the language server are unaffected, but Install-Module stops working and culture-aware formatting falls back to the invariant culture. Rarely worth it -- libicu is the small part of this feature."
     }
   }
 }

@@ -17,7 +17,7 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 | [ansible-lint](features/ansible-lint) | Installs [ansible-lint](https://ansible.readthedocs.io/projects/lint/) into the ansible-core pipx environment |
 | [ansible-navigator](features/ansible-navigator) | Installs [ansible-navigator](https://ansible.readthedocs.io/projects/navigator/) as a standalone pipx package. Only `ansible-navigator` reaches PATH — `ansible-core` and `ansible-lint` come along as dependencies but stay unexposed, so nothing competes with the Execution Environment. Requires a container runtime (Docker/Podman). |
 | [direnv](features/direnv) | Installs [direnv](https://direnv.net/) and configures the shell hook for all users |
-| [powershell](features/powershell) | Installs [PowerShell](https://github.com/PowerShell/PowerShell) (`pwsh`) and PSScriptAnalyzer, for the `ms-vscode.PowerShell` extension's linting. Adds ~330 MB (pwsh bundles .NET; libicu is required). |
+| [powershell](features/powershell) | Installs [PowerShell](https://github.com/PowerShell/PowerShell) (`pwsh`) and PSScriptAnalyzer, for the `ms-vscode.PowerShell` extension's linting. Adds ~239 MB (pwsh bundles its own .NET). |
 
 ### Usage
 
@@ -70,3 +70,31 @@ Features support `linux/amd64` and `linux/arm64`, selecting downloads by
 - **ansible-navigator** — `onigurumacffi` has no aarch64 wheel, so it is built
   from source and the toolchain removed again afterwards.
 - **obsidian-export** — no prebuilt aarch64 binary, compiled from source.
+
+## Linting Ansible against the Execution Environment
+
+The collections live in the EE, not in the devcontainer, so anything that lints
+with its own ansible-lint sees an empty `ansible_collections` and cannot resolve
+collection-qualified modules. `ansible-navigator` runs both inside the EE:
+
+```bash
+ansible-navigator lint --ee true          # ansible-lint, in the EE
+ansible-navigator exec -- <command>       # anything else, in the EE
+```
+
+pre-commit builds an isolated environment per hook, so the stock ansible-lint
+hook installs a second ansible-lint with no collections. `language: system` uses
+what is already on PATH instead:
+
+```yaml
+- repo: local
+  hooks:
+    - id: ansible-lint-ee
+      name: ansible-lint (execution environment)
+      language: system
+      entry: ansible-navigator lint --ee true --mode stdout
+      files: \.(yml|yaml)$
+```
+
+That belongs in the repos being linted, not here — this repo only installs the
+pre-commit binary.

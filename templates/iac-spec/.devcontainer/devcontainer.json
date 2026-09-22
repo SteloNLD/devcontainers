@@ -50,9 +50,10 @@
     "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {},
     "ghcr.io/stelonld/devcontainer-features/direnv:1": {},
     // For ms-vscode.PowerShell, whose linting runs PSScriptAnalyzer inside a real
-    // pwsh host -- the extension alone does nothing without it. Measured cost:
-    // ~195 MB pwsh (it bundles its own .NET) plus ~135 MB libicu, which pwsh will
-    // not start without. That is the largest single feature here by some margin.
+    // pwsh host -- the extension alone does nothing without it. ~239 MB: 195 pwsh
+    // (it bundles its own .NET), 36 libicu (pwsh will not start without ICU), 8
+    // PSScriptAnalyzer. The feature drops the analyzer's 279 MB of Windows
+    // compatibility_profiles, which only the PSUseCompatible* rules read.
     "ghcr.io/stelonld/devcontainer-features/powershell:1": {},
     // The prompt. The binary only; a dotfiles repo supplies starship.toml, and
     // its own init is guarded on STARSHIP_SHELL so the two never double-init.
