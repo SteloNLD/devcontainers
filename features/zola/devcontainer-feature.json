@@ -1,13 +1,18 @@
 {
   "id": "zola",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Zola",
   "description": "Installs the Zola static site generator",
   "options": {
     "version": {
       "type": "string",
-      "default": "0.22.1",
-      "description": "Version of Zola to install"
+      "default": "latest",
+      "description": "Version of Zola to install. \"latest\" resolves the newest stable tag at build time; give an exact version to pin.",
+      "proposals": [
+        "latest",
+        "0.22",
+        "0.22.1"
+      ]
     }
   }
 }

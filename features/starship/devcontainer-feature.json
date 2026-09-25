@@ -1,13 +1,18 @@
 {
   "id": "starship",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "name": "starship",
   "description": "Installs the starship cross-shell prompt and configures the bash hook for all users, on both Debian/Ubuntu (/etc/bash.bashrc) and RPM distros (/etc/profile.d)",
   "options": {
     "version": {
       "type": "string",
-      "default": "1.26.0",
-      "description": "Version of starship to install"
+      "default": "latest",
+      "description": "Version of starship to install. \"latest\" resolves the newest stable tag at build time; give an exact version to pin.",
+      "proposals": [
+        "latest",
+        "1.26",
+        "1.26.0"
+      ]
     },
     "installShellHook": {
       "type": "boolean",

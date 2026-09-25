@@ -1,13 +1,18 @@
 {
   "id": "tflint",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "tflint",
   "description": "Installs tflint, a linter for OpenTofu/Terraform",
   "options": {
     "version": {
       "type": "string",
-      "default": "0.62.1",
-      "description": "Version of tflint to install"
+      "default": "latest",
+      "description": "Version of tflint to install. \"latest\" resolves the newest stable tag at build time; give an exact version to pin.",
+      "proposals": [
+        "latest",
+        "0.62",
+        "0.62.1"
+      ]
     }
   }
 }
