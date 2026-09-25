@@ -1,0 +1,64 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-extra/features/pre-commit:2": {
+      "version": "2.0.18",
+      "resolved": "ghcr.io/devcontainers-extra/features/pre-commit@sha256:6e0bb2ce80caca1d94f44dab5d0653d88a1c00984e590adb7c6bce012d0ade6e",
+      "integrity": "sha256:6e0bb2ce80caca1d94f44dab5d0653d88a1c00984e590adb7c6bce012d0ade6e"
+    },
+    "ghcr.io/devcontainers-extra/features/sops:1": {
+      "version": "1.0.15",
+      "resolved": "ghcr.io/devcontainers-extra/features/sops@sha256:4cf07db9322cbe261fd103de5ba390907df63cd48d9e0d68517656fc35a27e6e",
+      "integrity": "sha256:4cf07db9322cbe261fd103de5ba390907df63cd48d9e0d68517656fc35a27e6e"
+    },
+    "ghcr.io/stelonld/devcontainer-features/ansible-navigator:1": {
+      "version": "1.6.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/ansible-navigator@sha256:b5df11da3bf909ea337cccc09c2031ee559d9b197f0ae06c6c7925c8838f628f",
+      "integrity": "sha256:b5df11da3bf909ea337cccc09c2031ee559d9b197f0ae06c6c7925c8838f628f"
+    },
+    "ghcr.io/stelonld/devcontainer-features/direnv:1": {
+      "version": "1.1.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/direnv@sha256:ca5c2ddbe1c80dfbfc7d9e483e509c36ed6900cec7b2be226068e5e4a3da70d5",
+      "integrity": "sha256:ca5c2ddbe1c80dfbfc7d9e483e509c36ed6900cec7b2be226068e5e4a3da70d5"
+    },
+    "ghcr.io/stelonld/devcontainer-features/github-cli:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/github-cli@sha256:00c9c3963ff53949d58aafd3c4a0dbb2218a4b0c10e2d559e7a48b7a88868dc7",
+      "integrity": "sha256:00c9c3963ff53949d58aafd3c4a0dbb2218a4b0c10e2d559e7a48b7a88868dc7"
+    },
+    "ghcr.io/stelonld/devcontainer-features/openbao:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/openbao@sha256:bdfe2df91db6fe009cec0db3be47dfec34761bb01691342a95e3a7c5c35860fe",
+      "integrity": "sha256:bdfe2df91db6fe009cec0db3be47dfec34761bb01691342a95e3a7c5c35860fe"
+    },
+    "ghcr.io/stelonld/devcontainer-features/opentofu:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/opentofu@sha256:c2a873b58c10ebb0526d90490f91008fa6321aff33e569035486b6f26baa1a66",
+      "integrity": "sha256:c2a873b58c10ebb0526d90490f91008fa6321aff33e569035486b6f26baa1a66"
+    },
+    "ghcr.io/stelonld/devcontainer-features/packer:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/packer@sha256:3bc81abf8d35d57f6738388237a4d6c42621cfcbcff52a87d6fd4b49d4196f41",
+      "integrity": "sha256:3bc81abf8d35d57f6738388237a4d6c42621cfcbcff52a87d6fd4b49d4196f41"
+    },
+    "ghcr.io/stelonld/devcontainer-features/powershell:1": {
+      "version": "1.2.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/powershell@sha256:00ebdcffe1feebd8b2372aa69812fe5c3d0cd8ffeb967bcf00f8c41dc1759409",
+      "integrity": "sha256:00ebdcffe1feebd8b2372aa69812fe5c3d0cd8ffeb967bcf00f8c41dc1759409"
+    },
+    "ghcr.io/stelonld/devcontainer-features/python:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/python@sha256:151cb60dafa13f4b0f21f93a4fcd7d297dc1219a6bc5695cfda6b7d2bde82c9c",
+      "integrity": "sha256:151cb60dafa13f4b0f21f93a4fcd7d297dc1219a6bc5695cfda6b7d2bde82c9c"
+    },
+    "ghcr.io/stelonld/devcontainer-features/starship:1": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/starship@sha256:d68ddc23e15ca54dd803ba202e76f932f8fb0b73d4aef44ceec59bec242f2cfb",
+      "integrity": "sha256:d68ddc23e15ca54dd803ba202e76f932f8fb0b73d4aef44ceec59bec242f2cfb"
+    },
+    "ghcr.io/stelonld/devcontainer-features/tflint:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/stelonld/devcontainer-features/tflint@sha256:a235e3d4299cf4dc2a954c3d66a0b84a04a44861cc9624cab19569d60e5747bb",
+      "integrity": "sha256:a235e3d4299cf4dc2a954c3d66a0b84a04a44861cc9624cab19569d60e5747bb"
+    }
+  }
+}

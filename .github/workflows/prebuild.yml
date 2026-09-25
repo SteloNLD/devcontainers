@@ -64,8 +64,12 @@ jobs:
             test "$(uname -m)" = "${{ matrix.arch }}" \
               || { echo "expected ${{ matrix.arch }}, got $(uname -m)"; exit 1; }
             echo "== $(uname -m)"
+            # podman is checked at /usr/bin/podman, not through the podman shim: the
+            # shim is `sudo -n podman`, and this action remaps the container user's
+            # uid to the runner's, after which sudo fails with "PAM account
+            # management error". The binary's architecture is what matters here.
             for cmd in \
-              "podman --version" \
+              "/usr/bin/podman --version" \
               "python3 --version" \
               "pipx --version" \
               "gh --version" \
