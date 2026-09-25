@@ -1,12 +1,20 @@
 name: "Prebuild IaC image"
 
+# Triggered by the feature-publishing workflow finishing, not by the push itself.
+# Both used to fire on the same push and race: this image installs features from
+# ghcr by major tag, and a build that starts seconds after publishing begins
+# resolves :1 to the PREVIOUS release. Measured -- publish ran 15:09:08-15:09:54
+# while the builds started 15:09:09 and 15:09:11, producing an image with the old
+# openbao, gh and packer.
+#
+# The cost is that this no longer has a paths filter, since workflow_run cannot
+# take one: a README-only push to main now rebuilds too. That is a couple of
+# minutes, against shipping an image whose contents silently lag the features.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - templates/iac-spec/**
-      - features/**
+  workflow_run:
+    workflows: ["Publish Features and Templates"]
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: "0 2 * * 1"
   workflow_dispatch:
@@ -22,6 +30,12 @@ jobs:
   # transaction and pipx build in the aarch64 half. useNativeRunner tags each
   # result :<tag>-linux-<arch> for the merge job.
   build:
+    # A failed publish means the features in ghcr are not what this commit says,
+    # so there is nothing worth building. Scheduled and manual runs have no
+    # triggering workflow and must not be gated on it.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     strategy:
       # Let both architectures report, so a break is visibly arch-specific or not.
       fail-fast: false
@@ -39,6 +53,11 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          # On workflow_run, checkout defaults to the branch tip rather than the
+          # commit that triggered it, so a second push landing mid-build would be
+          # built instead. Falls back to the default ref for schedule/dispatch.
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
 
       - uses: docker/login-action@v4
         with:
