@@ -1,1 +1,8 @@
 ansible-navigator.log
+
+# Written by `devcontainer build` on whoever's machine ran it, and it pins every
+# feature to the versions current at that moment. Committed by accident once, and
+# it silently froze the image's features at 1.0.0 while ghcr had 1.1.0 -- the
+# features resolve their tools at build time, so a lockfile here defeats the
+# entire point. The image is the snapshot; this file is local noise.
+devcontainer-lock.json
