@@ -71,6 +71,61 @@ Features support `linux/amd64` and `linux/arm64`, selecting downloads by
   from source and the toolchain removed again afterwards.
 - **obsidian-export** — no prebuilt aarch64 binary, compiled from source.
 
+## Keeping dependencies current
+
+Features do not hardcode tool versions. Each `version` option defaults to
+`latest` and resolves the newest stable tag at build time, the same way the
+upstream `devcontainers/features` do:
+
+```bash
+git ls-remote --tags --refs <repo> | sed 's#.*/tags/##; s#^v##' \
+  | grep -E '^[0-9]+\.[0-9]+(\.[0-9]+)?$' | sort -rV | head -1
+```
+
+The `grep` keeps stable tags only, so the alphas, betas, RCs and previews that
+opentofu, packer and PowerShell publish can never win. A base image without
+`git` falls back to the releases API. Pass an exact version to pin; `proposals`
+lists suggestions.
+
+Reproducibility comes from the **image**, not from numbers in these files. The
+weekly prebuild rebuilds with current versions, the smoke test execs every
+binary on both architectures, and the manifest is only merged if both pass — so
+a bad upstream release leaves the previous `:latest` standing.
+
+What is left pinned, and therefore owned by Renovate (`renovate.json`):
+
+| pin | manager |
+|---|---|
+| `FROM quay.io/fedora/fedora:44` | `dockerfile` |
+| `actions/checkout@v6`, `devcontainers/ci@v0.3`, … | `github-actions` |
+| feature majors, e.g. `pre-commit:2` | `devcontainer` |
+
+Our own features are excluded: they are referenced by major, so every 1.x
+release is picked up at the next build with no file change.
+
+Renovate rather than Dependabot because it is not tied to GitHub — it is an
+AGPL Node app supporting GitLab (including self-managed), Gitea, Forgejo,
+Bitbucket and Azure DevOps. `renovate.json` is portable; only the runner
+changes. Self-hosted, e.g. in GitLab CI:
+
+```yaml
+renovate:
+  image: ghcr.io/renovatebot/renovate:latest
+  script: renovate
+  variables:
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: https://gitlab.example.com/api/v4
+    RENOVATE_TOKEN: $RENOVATE_TOKEN     # project/group access token
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+```
+
+To check what the config sees without touching a remote:
+
+```bash
+npx renovate --platform=local --dry-run=lookup
+```
+
 ## Linting Ansible against the Execution Environment
 
 The collections live in the EE, not in the devcontainer, so anything that lints

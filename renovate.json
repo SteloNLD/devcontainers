@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Amsterdam",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "devcontainer": {
+    "managerFilePatterns": ["/(^|/)\\.devcontainer/devcontainer\\.json$/"]
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions",
+      "description": "One PR for all action bumps; they are reviewed together anyway."
+    },
+    {
+      "matchManagers": ["devcontainer"],
+      "matchPackageNames": ["ghcr.io/stelonld/devcontainer-features/**"],
+      "enabled": false,
+      "description": "Our own features, published from this repo. They are referenced by major only, so every 1.x release is picked up at build time with no file change. A 2.x would be our own decision, made in the same commit that publishes it -- not something to be told about by a bot."
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["quay.io/fedora/fedora"],
+      "groupName": "fedora base image",
+      "description": "Major Fedora bumps change the whole RPM surface, so keep them in their own reviewable PR."
+    }
+  ]
+}
