@@ -1,6 +1,6 @@
 {
   "id": "zola",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "Zola",
   "description": "Installs the Zola static site generator",
   "options": {

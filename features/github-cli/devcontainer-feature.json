@@ -1,6 +1,6 @@
 {
   "id": "github-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "GitHub CLI",
   "description": "Installs the GitHub CLI (gh) with dnf where available, falling back to the release tarball. The upstream devcontainers/features/github-cli is apt-only, so it cannot run on an RPM base.",
   "options": {

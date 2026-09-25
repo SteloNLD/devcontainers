@@ -1,6 +1,6 @@
 {
   "id": "obsidian-export",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "obsidian-export",
   "description": "Installs obsidian-export for converting Obsidian vaults to plain markdown",
   "options": {

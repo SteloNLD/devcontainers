@@ -1,6 +1,6 @@
 {
   "id": "openbao",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "OpenBao",
   "description": "Installs the OpenBao CLI (bao), the open-source fork of HashiCorp Vault. API-compatible with Vault, so VAULT_ADDR/VAULT_TOKEN and the community.hashi_vault Ansible collection work against it.",
   "options": {

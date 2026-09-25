@@ -6,18 +6,22 @@ set -e
 # Reproducibility comes from pinning the built image, not from a number in here.
 # An explicit version is passed straight through.
 resolve_version() {
+  # An explicit version returns before any network access, so a base without git
+  # can still use this feature by pinning instead of asking for "latest".
   [ "$1" != "latest" ] && { echo "$1"; return; }
-  if command -v git >/dev/null 2>&1; then
-    # --refs drops the ^{} peel entries git otherwise emits for annotated tags.
-    git ls-remote --tags --refs "$2" 2>/dev/null | sed 's#.*/tags/##; s#^v##'
-  else
-    # No git on this base. The API works but is rate-limited per IP, so git wins
-    # when it is there.
-    curl -fsSL "https://api.github.com/repos/${2#https://github.com/}/tags?per_page=100" 2>/dev/null \
-      | grep -o '"name": *"[^"]*"' | sed 's/.*"name": *"//; s/"$//; s/^v//'
-  fi | grep -E '^[0-9]+\.[0-9]+(\.[0-9]+)?$' | sort -rV | head -1
-  # The grep keeps stable tags only, so alphas, betas, RCs and previews -- which
-  # opentofu, packer and PowerShell all publish -- can never win the sort.
+  command -v git >/dev/null 2>&1 || {
+    echo "Resolving \"latest\" needs git; install git or pass an explicit version." >&2
+    return 1
+  }
+  # git ls-remote rather than the GitHub API: the API is 60 requests/hour per IP
+  # unauthenticated, and CI runners share address pools. --refs drops the ^{} peel
+  # entries git emits for annotated tags; the grep keeps stable tags only, so the
+  # alphas, betas, RCs and previews that opentofu, packer and PowerShell publish
+  # can never win the sort.
+  git ls-remote --tags --refs "$2" 2>/dev/null \
+    | sed 's#.*/tags/##; s#^v##' \
+    | grep -E '^[0-9]+\.[0-9]+(\.[0-9]+)?$' \
+    | sort -rV | head -1
 }
 
 VERSION=$(resolve_version "${VERSION}" "https://github.com/PowerShell/PowerShell")

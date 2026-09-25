@@ -83,9 +83,14 @@ git ls-remote --tags --refs <repo> | sed 's#.*/tags/##; s#^v##' \
 ```
 
 The `grep` keeps stable tags only, so the alphas, betas, RCs and previews that
-opentofu, packer and PowerShell publish can never win. A base image without
-`git` falls back to the releases API. Pass an exact version to pin; `proposals`
-lists suggestions.
+opentofu, packer and PowerShell publish can never win.
+
+`git ls-remote` rather than the GitHub API: unauthenticated the API allows 60
+requests/hour per IP and CI runners share address pools, so it is the option
+with the real failure mode. Resolving `latest` therefore needs `git` — and
+nothing else does, so a base without it fails with a clear message. Pinning an
+exact version returns before any network access, which is the escape hatch;
+`proposals` lists suggestions.
 
 Reproducibility comes from the **image**, not from numbers in these files. The
 weekly prebuild rebuilds with current versions, the smoke test execs every
