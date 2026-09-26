@@ -1,0 +1,41 @@
+name: "Renovate"
+
+# Self-hosted Renovate, running the upstream container directly rather than the
+# renovatebot/github-action wrapper. The wrapper is GitHub-specific glue with its
+# own inputs; the bare container takes the same env vars everywhere, so this file
+# ports to GitLab CI by swapping `container:` for `image:` and changing two
+# variables -- see "Keeping dependencies current" in the README.
+on:
+  schedule:
+    # Ahead of the Monday 02:00 prebuild, so an approved bump can be merged and
+    # rebuilt in the same morning.
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    # Pinned rather than :latest so a Renovate release cannot change behaviour
+    # unannounced. Renovate's own github-actions manager proposes the bumps.
+    container: ghcr.io/renovatebot/renovate:44.115.10
+    steps:
+      # No checkout: Renovate clones the repositories it works on itself, and
+      # reads their renovate.json from that clone.
+      - name: Run Renovate
+        env:
+          # NOT secrets.GITHUB_TOKEN. That token is forbidden from writing under
+          # .github/workflows, which is exactly what an action bump edits, and
+          # pull requests it opens do not trigger other workflows. This needs a
+          # PAT with repo + workflow scope, or a GitHub App token.
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_PLATFORM: github
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          LOG_LEVEL: info
+        run: |
+          if [ -z "$RENOVATE_TOKEN" ]; then
+            echo "RENOVATE_TOKEN is not set, so there is nothing to run."
+            echo "Create a PAT with 'repo' and 'workflow' scope and add it as the"
+            echo "RENOVATE_TOKEN repository secret to switch this on."
+            exit 0
+          fi
+          renovate

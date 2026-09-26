@@ -108,6 +108,17 @@ What is left pinned, and therefore owned by Renovate (`renovate.json`):
 Our own features are excluded: they are referenced by major, so every 1.x
 release is picked up at the next build with no file change.
 
+`.github/workflows/renovate.yml` runs it here, on a schedule, as the upstream
+container rather than the `renovatebot/github-action` wrapper. That is
+deliberate: the wrapper is GitHub-specific glue with its own inputs, while the
+bare container is configured entirely through environment variables, so the
+GitLab version below is the same job with `image:` instead of `container:`.
+
+It stays inert until a `RENOVATE_TOKEN` secret exists. It must be a PAT with
+`repo` + `workflow` scope, or a GitHub App token — **not** `GITHUB_TOKEN`, which
+is forbidden from writing under `.github/workflows` (exactly what an action bump
+edits) and whose pull requests do not trigger other workflows.
+
 Renovate rather than Dependabot because it is not tied to GitHub — it is an
 AGPL Node app supporting GitLab (including self-managed), Gitea, Forgejo,
 Bitbucket and Azure DevOps. `renovate.json` is portable; only the runner
@@ -125,11 +136,21 @@ renovate:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 ```
 
-To check what the config sees without touching a remote:
+To check what the config sees, without writing anything:
 
 ```bash
+# no remote at all
 npx renovate --platform=local --dry-run=lookup
+
+# against the real repo, still read-only
+docker run --rm -e RENOVATE_TOKEN=$(gh auth token) \
+  -e RENOVATE_PLATFORM=github -e RENOVATE_REPOSITORIES=SteloNLD/devcontainers \
+  -e RENOVATE_DRY_RUN=full ghcr.io/renovatebot/renovate:44.115.10 renovate
 ```
+
+Renovate reads each repository's own `renovate.json` from the clone it makes, so
+neither form needs a checkout, and `RENOVATE_CONFIG_FILE` is not involved — that
+variable points at the *runner's* global config, which is a different layer.
 
 ## Linting Ansible against the Execution Environment
 
