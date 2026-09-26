@@ -30,6 +30,10 @@ jobs:
           RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
           RENOVATE_PLATFORM: github
           RENOVATE_REPOSITORIES: ${{ github.repository }}
+          # renovate.json restricts PR creation to Monday mornings. A run you
+          # triggered by hand is an explicit "do it now", so lift that -- else a
+          # manual dispatch extracts dependencies and then silently does nothing.
+          RENOVATE_FORCE: ${{ github.event_name == 'workflow_dispatch' && '{"schedule":null}' || '' }}
           LOG_LEVEL: info
         run: |
           if [ -z "$RENOVATE_TOKEN" ]; then
