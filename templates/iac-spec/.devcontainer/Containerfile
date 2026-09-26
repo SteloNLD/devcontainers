@@ -8,7 +8,7 @@
 # Why podman rather than docker-ce: the EE is already UBI9, so this puts the
 # devcontainer in the same RPM space, and podman is ~120 MB smaller with no daemon
 # to start before the first EE run.
-FROM quay.io/fedora/fedora:44
+FROM quay.io/fedora/fedora:46
 
 ARG USERNAME=vscode
 ARG USER_UID=1000
