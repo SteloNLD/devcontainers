@@ -1,0 +1,53 @@
+name: "Fedora release watch"
+
+# Renovate cannot answer this question. quay.io/fedora/fedora publishes numeric
+# tags for unreleased versions -- with 44 stable it proposed 46, which is rawhide
+# -- and the docker datasource just takes the highest. So major bumps for that
+# image are disabled in renovate.json, and this job watches the real release
+# dates instead and opens an issue when there is something to decide.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: fedora
+        run: ./.github/scripts/fedora-release-check.sh >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the issue
+        if: steps.fedora.outputs.action == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Fedora base image needs attention (on ${{ steps.fedora.outputs.current }}, newest GA is ${{ steps.fedora.outputs.newest_ga }})"
+          SUMMARY: ${{ steps.fedora.outputs.summary }}
+        run: |
+          body=$(printf '%s\n\n%s\n' "$SUMMARY" \
+            "Edit \`FROM quay.io/fedora/fedora:<n>\` in templates/iac-spec/.devcontainer/Containerfile. Check the tag is a real release first: the registry also publishes prerelease and rawhide tags, which is why this is not a Renovate PR.")
+          # One issue, reused. A new one every Monday would be noise.
+          existing=$(gh issue list --state open --label fedora --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --title "$TITLE" --body "$body"
+            echo "updated issue #$existing"
+          else
+            gh label create fedora --description "Fedora base image lifecycle" --color 294172 2>/dev/null || true
+            gh issue create --title "$TITLE" --body "$body" --label fedora
+          fi
+
+      - name: Nothing to do
+        if: steps.fedora.outputs.action != 'true'
+        run: |
+          echo "${{ steps.fedora.outputs.summary }}"
+          # Close a stale issue once the base image has caught up.
+          existing=$(GH_TOKEN=${{ github.token }} gh issue list --state open --label fedora --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            GH_TOKEN=${{ github.token }} gh issue close "$existing" --comment "Base image is on the newest released Fedora again."
+          fi
