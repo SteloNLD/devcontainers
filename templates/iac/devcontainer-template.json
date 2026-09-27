@@ -1,6 +1,6 @@
 {
   "id": "iac",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "IaC",
-  "description": "IaC devcontainer using prebuilt image — OpenTofu, Packer, Ansible, tflint, ansible-lint."
+  "description": "IaC devcontainer using the prebuilt Fedora + podman image — OpenTofu, OpenBao, Packer, tflint, ansible-navigator (Ansible runs in the Execution Environment), direnv, pre-commit, sops, PowerShell, starship."
 }

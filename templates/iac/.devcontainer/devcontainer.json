@@ -13,8 +13,13 @@
   "mounts": [
     // Sibling repos. The open repo appears here too; same bind, cannot drift.
     "source=${localEnv:HOME}/src,target=/home/vscode/src,type=bind",
-    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
-    "source=${localEnv:HOME}/.config/git,target=/home/vscode/.config/git,type=bind"
+    // Credentials only. gh keeps its token here only if the host logged in with
+    // --insecure-storage; a keychain-stored token does not cross into the container.
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind"
+    // ~/.config/git is deliberately NOT mounted. VS Code injects a credential helper
+    // into the global git config on every connect -- a path with its server build
+    // hash and a per-session /tmp file -- and the bind mount wrote that back onto
+    // the host, where it does not resolve. Carry git identity in a dotfiles repo.
   ],
   "customizations": {
     "vscode": {

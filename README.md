@@ -18,6 +18,9 @@ Published to `ghcr.io/stelonld/devcontainer-features`.
 | [ansible-navigator](features/ansible-navigator) | Installs [ansible-navigator](https://ansible.readthedocs.io/projects/navigator/) as a standalone pipx package. Only `ansible-navigator` reaches PATH — `ansible-core` and `ansible-lint` come along as dependencies but stay unexposed, so nothing competes with the Execution Environment. Requires a container runtime (Docker/Podman). |
 | [direnv](features/direnv) | Installs [direnv](https://direnv.net/) and configures the shell hook for all users |
 | [powershell](features/powershell) | Installs [PowerShell](https://github.com/PowerShell/PowerShell) (`pwsh`) and PSScriptAnalyzer, for the `ms-vscode.PowerShell` extension's linting. Adds ~239 MB (pwsh bundles its own .NET). |
+| [python](features/python) | Installs the distribution's `python3`, `pip` and `pipx` from the package manager. Unlike `devcontainers/features/python` it cannot build CPython from source, so it pulls no compiler toolchain (~515 MB smaller on Fedora) |
+| [github-cli](features/github-cli) | Installs the [GitHub CLI](https://cli.github.com/) (`gh`) with dnf where available, falling back to the release tarball. Upstream's is apt-only |
+| [starship](features/starship) | Installs the [starship](https://starship.rs/) prompt and a bash hook for all users, guarded on the `starship_precmd` function so a dotfiles init never double-runs |
 
 ### Usage
 
@@ -37,7 +40,7 @@ Published to `ghcr.io/stelonld/devcontainer-templates`.
 
 | Template | Description |
 |---|---|
-| [iac-spec](templates/iac-spec) | Full IaC devcontainer — OpenTofu, OpenBao, Packer, Ansible, ansible-lint, ansible-navigator, tflint, direnv, pre-commit, sops. Source for the prebuilt `iac` image. |
+| [iac-spec](templates/iac-spec) | Fedora + podman IaC devcontainer — OpenTofu, OpenBao, Packer, tflint, ansible-navigator, direnv, pre-commit, sops, PowerShell, starship, gh. Ansible and its collections live in the Execution Environment. Source for the prebuilt `iac` image. |
 | [iac](templates/iac) | IaC devcontainer using the prebuilt image. Faster startup, same tools. |
 
 ### Usage
@@ -102,7 +105,7 @@ What is left pinned, and therefore owned by Renovate (`renovate.json`):
 | pin | manager |
 |---|---|
 | `FROM quay.io/fedora/fedora:44` | `dockerfile` |
-| `actions/checkout@v6`, `devcontainers/ci@v0.3`, … | `github-actions` |
+| `actions/checkout@v7`, `devcontainers/ci@v0.3`, … | `github-actions` |
 | feature majors, e.g. `pre-commit:2` | `devcontainer` |
 
 Our own features are excluded: they are referenced by major, so every 1.x

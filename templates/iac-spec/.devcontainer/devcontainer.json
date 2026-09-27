@@ -55,8 +55,9 @@
     // PSScriptAnalyzer. The feature drops the analyzer's 279 MB of Windows
     // compatibility_profiles, which only the PSUseCompatible* rules read.
     "ghcr.io/stelonld/devcontainer-features/powershell:1": {},
-    // The prompt. The binary only; a dotfiles repo supplies starship.toml, and
-    // its own init is guarded on STARSHIP_SHELL so the two never double-init.
+    // The prompt. The binary only; a dotfiles repo supplies starship.toml. Both
+    // hooks guard on the starship_precmd function, never on STARSHIP_SHELL --
+    // starship exports that, so a variable guard skips init in every child shell.
     "ghcr.io/stelonld/devcontainer-features/starship:1": {},
     // Both install via nanolayer (gh-release and pipx-package respectively), so
     // neither touches a package manager and both work on Fedora.
