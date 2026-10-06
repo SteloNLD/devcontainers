@@ -50,8 +50,9 @@ RUN mkdir -p /home/$USERNAME/.config /home/$USERNAME/.local/bin \
 
 # Rootless podman maps the user's subuid range with newuidmap/newgidmap, which
 # only works while those two carry cap_setuid/cap_setgid. dnf sets the file
-# capabilities, but the arm64 build runs under QEMU emulation and loses them, and
-# rootless podman then fails with
+# capabilities, but they do not survive the CI image build: the published image
+# has neither, although it is built on a native runner. Rootless podman then
+# fails with
 #
 #   newuidmap: write to uid_map failed: Operation not permitted
 #

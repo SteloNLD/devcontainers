@@ -83,9 +83,9 @@ jobs:
             test "$(uname -m)" = "${{ matrix.arch }}" \
               || { echo "expected ${{ matrix.arch }}, got $(uname -m)"; exit 1; }
             echo "== $(uname -m)"
-            # The arm64 build runs under QEMU, which drops the file capabilities dnf
-            # sets on newuidmap/newgidmap. The Containerfile restores them; this is
-            # what proves it, because without them rootless podman cannot start.
+            # The image build drops the file capabilities dnf sets on newuidmap and
+            # newgidmap. The Containerfile restores them; this is what proves it,
+            # because without them rootless podman cannot start.
             for f in newuidmap newgidmap; do
               getcap /usr/bin/$f | grep -q cap_set || test -u /usr/bin/$f \
                 || { echo "FAILED on $(uname -m): /usr/bin/$f has neither file caps nor setuid"; exit 1; }
