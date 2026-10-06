@@ -48,19 +48,23 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN mkdir -p /home/$USERNAME/.config /home/$USERNAME/.local/bin \
     && chown -R $USER_UID:$USER_GID /home/$USERNAME/.config /home/$USERNAME/.local
 
-# Rootless podman does not work on the host this is developed against: a process
-# cannot read its own argv[0] from /proc/self/cmdline, and rootless podman rebuilds
-# argv from exactly that to re-exec into a user namespace. Reproduced on podman
-# 4.9.3 and 5.8.4, and inside a container spawned by containerd, so it is the kernel
-# rather than a shell artifact.
+# Rootless podman maps the user's subuid range with newuidmap/newgidmap, which
+# only works while those two carry cap_setuid/cap_setgid. dnf sets the file
+# capabilities, but the arm64 build runs under QEMU emulation and loses them, and
+# rootless podman then fails with
 #
-# Rootful podman skips that re-exec and works. This shim keeps the container user as
-# $USERNAME while podman runs as root. EE containers still run as uid 1000, which
-# maps back to $USERNAME, so files written into the workspace keep the right owner.
-RUN printf '#!/bin/sh\nexec sudo -n /usr/bin/podman "$@"\n' > /usr/local/bin/podman \
-    && chmod +x /usr/local/bin/podman
+#   newuidmap: write to uid_map failed: Operation not permitted
+#
+# Restore them the way the official podman image does. Where setting file
+# capabilities is itself impossible in the build environment, setuid root is the
+# equivalent that Debian ships by default.
+RUN rpm --setcaps shadow-utils 2>/dev/null; \
+    if ! getcap /usr/bin/newuidmap | grep -q cap_setuid; then \
+        chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap; \
+    fi
 
-# Native overlay, which rootful podman can use in a privileged container.
+# Native overlay for the root store. Rootless podman keeps its own store under
+# ~/.local/share/containers with the same driver; fuse-overlayfs is the fallback.
 RUN mkdir -p /etc/containers \
     && printf '[storage]\ndriver = "overlay"\nrunroot = "/run/containers/storage"\ngraphroot = "/var/lib/containers/storage"\n' \
        > /etc/containers/storage.conf
