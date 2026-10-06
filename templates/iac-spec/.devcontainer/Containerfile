@@ -49,15 +49,14 @@ RUN mkdir -p /home/$USERNAME/.config /home/$USERNAME/.local/bin \
     && chown -R $USER_UID:$USER_GID /home/$USERNAME/.config /home/$USERNAME/.local
 
 # Rootless podman maps the user's subuid range with newuidmap/newgidmap, which
-# only works while those two carry cap_setuid/cap_setgid. dnf sets the file
-# capabilities, but they do not survive the CI image build: the published image
-# has neither, although it is built on a native runner. Rootless podman then
-# fails with
+# only works while those two carry cap_setuid/cap_setgid. The Fedora base image
+# ships shadow-utils without them (`rpm -V shadow-utils` flags both binaries with
+# P), and nothing above reinstalls the package, so rootless podman fails with
 #
 #   newuidmap: write to uid_map failed: Operation not permitted
 #
-# Restore them the way the official podman image does. Where setting file
-# capabilities is itself impossible in the build environment, setuid root is the
+# Restore them the way the official podman image does. Should setting file
+# capabilities ever be impossible in the build environment, setuid root is the
 # equivalent that Debian ships by default.
 RUN rpm --setcaps shadow-utils 2>/dev/null; \
     if ! getcap /usr/bin/newuidmap | grep -q cap_setuid; then \

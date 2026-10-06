@@ -83,8 +83,8 @@ jobs:
             test "$(uname -m)" = "${{ matrix.arch }}" \
               || { echo "expected ${{ matrix.arch }}, got $(uname -m)"; exit 1; }
             echo "== $(uname -m)"
-            # The image build drops the file capabilities dnf sets on newuidmap and
-            # newgidmap. The Containerfile restores them; this is what proves it,
+            # The Fedora base image ships newuidmap/newgidmap without their file
+            # capabilities. The Containerfile restores them; this is what proves it,
             # because without them rootless podman cannot start.
             for f in newuidmap newgidmap; do
               getcap /usr/bin/$f | grep -q cap_set || test -u /usr/bin/$f \
