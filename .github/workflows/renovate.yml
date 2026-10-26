@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     # Pinned rather than :latest so a Renovate release cannot change behaviour
     # unannounced. Renovate's own github-actions manager proposes the bumps.
-    container: ghcr.io/renovatebot/renovate:44.115.10
+    container: ghcr.io/renovatebot/renovate:44.181.10
     steps:
       # No checkout: Renovate clones the repositories it works on itself, and
       # reads their renovate.json from that clone.
